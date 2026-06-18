@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkyCast | Previsão do Tempo Profissional</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts: Inter para um visual moderno e limpo -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chart.js para os gráficos -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Lucide Icons (via CDN para ícones leves e modernos) -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="light-mode">
+    <div id="app-container">
+        <!-- Skeleton Loading (visível inicialmente) -->
+        <div id="skeleton-screen" class="skeleton-container">
+            <div class="skeleton-header"></div>
+            <div class="skeleton-main-card"></div>
+            <div class="skeleton-grid">
+                <div class="skeleton-card"></div>
+                <div class="skeleton-card"></div>
+                <div class="skeleton-card"></div>
+                <div class="skeleton-card"></div>
+            </div>
+        </div>
+
+        <!-- Conteúdo Principal (escondido durante o loading) -->
+        <main id="main-content" class="hidden">
+            <header class="app-header">
+                <div class="logo">
+                    <i data-lucide="cloud-sun"></i>
+                    <span>SkyCast</span>
+                </div>
+                <div class="search-container">
+                    <div class="search-wrapper">
+                        <i data-lucide="search" class="search-icon"></i>
+                        <input type="text" id="city-input" placeholder="Buscar cidade..." autocomplete="off">
+                        <button id="geo-btn" title="Usar minha localização">
+                            <i data-lucide="map-pin"></i>
+                        </button>
+                    </div>
+                    <div id="search-history" class="search-history hidden"></div>
+                    <div id="autocomplete-results" class="autocomplete-results hidden"></div>
+                </div>
+                <button id="theme-toggle" class="theme-toggle">
+                    <i data-lucide="moon" class="moon-icon"></i>
+                    <i data-lucide="sun" class="sun-icon hidden"></i>
+                </button>
+            </header>
+
+            <section class="current-weather-section">
+                <div class="current-main-card">
+                    <div class="location-info">
+                        <h1 id="city-name">--</h1>
+                        <p id="current-date">--</p>
+                    </div>
+                    <div class="weather-primary">
+                        <div class="temp-container">
+                            <span id="current-temp">--</span><span class="unit">°C</span>
+                        </div>
+                        <div class="weather-status">
+                            <div id="weather-icon-large"></div>
+                            <p id="weather-desc">--</p>
+                        </div>
+                    </div>
+                    <div class="temp-range">
+                        <span>Mín: <strong id="min-temp">--°</strong></span>
+                        <span>Máx: <strong id="max-temp">--°</strong></span>
+                    </div>
+                </div>
+
+                <div class="weather-details-grid">
+                    <div class="detail-card" data-reveal>
+                        <i data-lucide="thermometer"></i>
+                        <div class="detail-info">
+                            <p class="label">Sensação</p>
+                            <p class="value" id="feels-like">--°C</p>
+                        </div>
+                    </div>
+                    <div class="detail-card" data-reveal>
+                        <i data-lucide="droplets"></i>
+                        <div class="detail-info">
+                            <p class="label">Umidade</p>
+                            <p class="value" id="humidity">--%</p>
+                        </div>
+                    </div>
+                    <div class="detail-card" data-reveal>
+                        <i data-lucide="wind"></i>
+                        <div class="detail-info">
+                            <p class="label">Vento</p>
+                            <p class="value" id="wind-speed">-- km/h</p>
+                        </div>
+                    </div>
+                    <div class="detail-card" data-reveal>
+                        <i data-lucide="sun"></i>
+                        <div class="detail-info">
+                            <p class="label">Índice UV</p>
+                            <p class="value" id="uv-index">--</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="forecast-section">
+                <div class="section-header">
+                    <h2>Previsão para as próximas horas</h2>
+                </div>
+                <div class="hourly-forecast-container" id="hourly-container">
+                    <!-- Hourly items will be injected here -->
+                </div>
+                
+                <div class="chart-container" data-reveal>
+                    <canvas id="hourly-chart"></canvas>
+                </div>
+            </section>
+
+            <section class="forecast-section">
+                <div class="section-header">
+                    <h2>Previsão para 7 dias</h2>
+                </div>
+                <div class="daily-forecast-grid" id="daily-container">
+                    <!-- Daily cards will be injected here -->
+                </div>
+            </section>
+
+            <section class="highlights-section">
+                <div class="section-header">
+                    <h2>Destaques de hoje</h2>
+                </div>
+                <div class="highlights-grid">
+                    <div class="highlight-card" data-reveal>
+                        <h3>Qualidade do Ar</h3>
+                        <div class="aqi-content">
+                            <div id="aqi-value" class="aqi-number">--</div>
+                            <p id="aqi-status">--</p>
+                        </div>
+                    </div>
+                    <div class="highlight-card" data-reveal>
+                        <h3>Sol</h3>
+                        <div class="sun-times">
+                            <div class="sun-item">
+                                <i data-lucide="sunrise"></i>
+                                <div>
+                                    <p class="label">Nascer</p>
+                                    <p id="sunrise-time">--:--</p>
+                                </div>
+                            </div>
+                            <div class="sun-item">
+                                <i data-lucide="sunset"></i>
+                                <div>
+                                    <p class="label">Pôr do sol</p>
+                                    <p id="sunset-time">--:--</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="highlight-card" data-reveal>
+                        <h3>Visibilidade</h3>
+                        <p class="highlight-value"><span id="visibility">--</span> km</p>
+                    </div>
+                    <div class="highlight-card" data-reveal>
+                        <h3>Pressão</h3>
+                        <p class="highlight-value"><span id="pressure">--</span> hPa</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="app-footer">
+            <p>&copy; 2026 SkyCast. Dados por Open-Meteo.</p>
+        </footer>
+    </div>
+
+    <!-- Script para inicializar ícones Lucide -->
+    <script>
+        lucide.createIcons();
+    </script>
+    <script src="script.js" type="module"></script>
+</body>
+</html>

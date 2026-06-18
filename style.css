@@ -1,0 +1,823 @@
+:root {
+    /* Paleta de Cores - Modo Claro */
+    --bg-color: #F5F7FA;
+    --card-bg: #FFFFFF;
+    --text-primary: #1F2937;
+    --text-secondary: #6B7280;
+    --accent-color: #3B82F6;
+    --accent-hover: #2563EB;
+    --border-color: #E5E7EB;
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    
+    /* Variáveis de Espaçamento e Bordas */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 20px;
+    --container-width: 1200px;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dark-mode {
+    --bg-color: #0F172A;
+    --card-bg: #1E293B;
+    --text-primary: #E2E8F0;
+    --text-secondary: #94A3B8;
+    --accent-color: #60A5FA;
+    --accent-hover: #3B82F6;
+    --border-color: #334155;
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+}
+
+/* Reset e Estilos Globais */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    line-height: 1.5;
+    transition: background-color 0.5s ease, color 0.5s ease;
+    overflow-x: hidden;
+}
+
+#app-container {
+    max-width: var(--container-width);
+    margin: 0 auto;
+    padding: 20px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* Header */
+.app-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    gap: 20px;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--accent-color);
+}
+
+.search-container {
+    flex: 1;
+    max-width: 500px;
+    position: relative;
+}
+
+.search-wrapper {
+    display: flex;
+    align-items: center;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 8px 16px;
+    box-shadow: var(--shadow);
+    transition: var(--transition);
+}
+
+.search-wrapper:focus-within {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+.search-icon {
+    color: var(--text-secondary);
+    margin-right: 10px;
+}
+
+#city-input {
+    border: none;
+    background: transparent;
+    color: var(--text-primary);
+    width: 100%;
+    font-size: 1rem;
+    outline: none;
+}
+
+#geo-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 50%;
+    transition: var(--transition);
+}
+
+#geo-btn:hover {
+    color: var(--accent-color);
+    background: rgba(59, 130, 246, 0.1);
+}
+
+.theme-toggle {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow);
+    transition: var(--transition);
+}
+
+.theme-toggle:hover {
+    transform: scale(1.05);
+}
+
+/* Current Weather Section */
+.current-weather-section {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.current-main-card {
+    background: var(--card-bg);
+    border-radius: var(--radius-lg);
+    padding: 40px;
+    box-shadow: var(--shadow-lg);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Background dinâmico por classe no main card */
+.current-main-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.1;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.location-info h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.location-info p {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+}
+
+.weather-primary {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    margin: 30px 0;
+}
+
+.temp-container {
+    font-size: 6rem;
+    font-weight: 800;
+    line-height: 1;
+    display: flex;
+    align-items: flex-start;
+}
+
+.temp-container .unit {
+    font-size: 2rem;
+    margin-top: 15px;
+    color: var(--accent-color);
+}
+
+.weather-status {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#weather-icon-large svg {
+    width: 80px;
+    height: 80px;
+    color: var(--accent-color);
+}
+
+#weather-desc {
+    font-size: 1.2rem;
+    text-transform: capitalize;
+    margin-top: 10px;
+}
+
+.temp-range {
+    display: flex;
+    gap: 20px;
+    font-size: 1.1rem;
+}
+
+.weather-details-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+}
+
+.detail-card {
+    background: var(--card-bg);
+    border-radius: var(--radius-md);
+    padding: 20px;
+    box-shadow: var(--shadow);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    transition: var(--transition);
+}
+
+.detail-card:hover {
+    transform: translateY(-5px);
+}
+
+.detail-card i {
+    color: var(--accent-color);
+    width: 24px;
+    height: 24px;
+}
+
+.detail-info .label {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.detail-info .value {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+/* Forecast Sections */
+.forecast-section {
+    margin-bottom: 30px;
+}
+
+.section-header {
+    margin-bottom: 20px;
+}
+
+.section-header h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.hourly-forecast-container {
+    display: flex;
+    gap: 15px;
+    overflow-x: auto;
+    padding: 10px 5px 20px;
+    scrollbar-width: none; /* Firefox */
+}
+
+.hourly-forecast-container::-webkit-scrollbar {
+    display: none; /* Chrome/Safari */
+}
+
+.hourly-item {
+    background: var(--card-bg);
+    border-radius: var(--radius-md);
+    padding: 15px;
+    min-width: 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    box-shadow: var(--shadow);
+    transition: var(--transition);
+}
+
+.hourly-item:hover {
+    background: var(--accent-color);
+    color: white;
+}
+
+.hourly-item:hover i {
+    color: white;
+}
+
+.hourly-item .time {
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.hourly-item .temp {
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
+/* Chart */
+.chart-container {
+    background: var(--card-bg);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    box-shadow: var(--shadow);
+    margin-top: 20px;
+    height: 300px;
+}
+
+/* Daily Forecast Grid */
+.daily-forecast-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.daily-card {
+    background: var(--card-bg);
+    border-radius: var(--radius-md);
+    padding: 15px 25px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 2fr 1fr;
+    align-items: center;
+    box-shadow: var(--shadow);
+    transition: var(--transition);
+}
+
+.daily-card:hover {
+    transform: scale(1.01);
+}
+
+.daily-card .day {
+    font-weight: 600;
+}
+
+.daily-card .condition {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.daily-card .precip {
+    color: var(--accent-color);
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.daily-card .temps {
+    text-align: right;
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+}
+
+.daily-card .max { font-weight: 700; }
+.daily-card .min { color: var(--text-secondary); }
+
+/* Highlights Section */
+.highlights-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.highlight-card {
+    background: var(--card-bg);
+    border-radius: var(--radius-lg);
+    padding: 25px;
+    box-shadow: var(--shadow);
+}
+
+.highlight-card h3 {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+}
+
+.aqi-number {
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--accent-color);
+}
+
+.sun-times {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.sun-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.sun-item i {
+    color: #F59E0B;
+}
+
+.highlight-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+}
+
+/* Autocomplete & History */
+.autocomplete-results, .search-history {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: var(--card-bg);
+    border-radius: var(--radius-md);
+    margin-top: 8px;
+    box-shadow: var(--shadow-lg);
+    z-index: 100;
+    overflow: hidden;
+}
+
+.result-item, .history-item {
+    padding: 12px 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: var(--transition);
+}
+
+.result-item:hover, .history-item:hover {
+    background: rgba(59, 130, 246, 0.1);
+}
+
+/* Skeleton Loading */
+.skeleton-container {
+    padding: 20px;
+}
+
+.skeleton-header {
+    height: 50px;
+    background: var(--border-color);
+    border-radius: var(--radius-lg);
+    margin-bottom: 30px;
+}
+
+.skeleton-main-card {
+    height: 300px;
+    background: var(--border-color);
+    border-radius: var(--radius-lg);
+    margin-bottom: 30px;
+}
+
+.skeleton-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.skeleton-card {
+    height: 100px;
+    background: var(--border-color);
+    border-radius: var(--radius-md);
+}
+
+.skeleton-container div {
+    animation: skeleton-loading 1.5s infinite linear;
+    background: linear-gradient(90deg, var(--border-color) 25%, #e2e8f0 50%, var(--border-color) 75%);
+    background-size: 200% 100%;
+}
+
+@keyframes skeleton-loading {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* Footer */
+.app-footer {
+    margin-top: auto;
+    padding: 40px 0 20px;
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+/* Responsividade */
+@media (max-width: 1024px) {
+    .current-weather-section {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .app-header {
+        flex-wrap: wrap;
+    }
+    
+    .logo { order: 1; }
+    .theme-toggle { order: 2; }
+    .search-container { 
+        order: 3; 
+        max-width: 100%;
+        width: 100%;
+    }
+    
+    .location-info h1 { font-size: 2rem; }
+    .temp-container { font-size: 4.5rem; }
+    
+    .daily-card {
+        grid-template-columns: 1fr 1.5fr 1fr;
+    }
+    
+    .daily-card .precip { display: none; }
+    
+    .current-main-card {
+        padding: 30px 20px;
+    }
+    
+    .weather-primary {
+        gap: 20px;
+    }
+    
+    #weather-icon-large svg {
+        width: 60px;
+        height: 60px;
+    }
+}
+
+@media (max-width: 480px) {
+    .weather-primary {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    .skeleton-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .weather-details-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .highlights-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .hourly-item {
+        min-width: 80px;
+        padding: 12px;
+    }
+    
+    .daily-card {
+        grid-template-columns: 1fr;
+        text-align: left;
+    }
+    
+    .daily-card .temps {
+        justify-content: flex-start;
+        gap: 20px;
+    }
+}
+
+/* Animações de Revelação */
+[data-reveal] {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+[data-reveal].revealed {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Fundos Dinâmicos por Condição Climática */
+.weather-sunny::before {
+    background: linear-gradient(135deg, #FFA500 0%, #FFD700 50%, #87CEEB 100%);
+}
+
+.weather-cloudy::before {
+    background: linear-gradient(135deg, #B0C4DE 0%, #D3D3D3 50%, #A9A9A9 100%);
+}
+
+.weather-rainy::before {
+    background: linear-gradient(135deg, #4B5563 0%, #5A6B7A 50%, #3E4E5F 100%);
+}
+
+.weather-stormy::before {
+    background: linear-gradient(135deg, #2C3E50 0%, #34495E 50%, #1A252F 100%);
+}
+
+.weather-snowy::before {
+    background: linear-gradient(135deg, #E0F6FF 0%, #FFFFFF 50%, #D0E8F2 100%);
+}
+
+.weather-night::before {
+    background: linear-gradient(135deg, #0F1C3F 0%, #1a2a4a 50%, #0d1929 100%);
+}
+
+/* Efeito de Partículas Leves (usando pseudo-elementos) */
+.current-main-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 20% 50%, rgba(255,255,255,0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255,255,255,0.05) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Animação de Entrada Suave */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.current-main-card {
+    animation: fadeInUp 0.8s ease-out 0.2s both;
+}
+
+.weather-details-grid .detail-card:nth-child(1) {
+    animation: fadeInUp 0.8s ease-out 0.3s both;
+}
+
+.weather-details-grid .detail-card:nth-child(2) {
+    animation: fadeInUp 0.8s ease-out 0.4s both;
+}
+
+.weather-details-grid .detail-card:nth-child(3) {
+    animation: fadeInUp 0.8s ease-out 0.5s both;
+}
+
+.weather-details-grid .detail-card:nth-child(4) {
+    animation: fadeInUp 0.8s ease-out 0.6s both;
+}
+
+/* Efeito Ripple em Botões */
+@keyframes ripple {
+    0% {
+        transform: scale(0);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(4);
+        opacity: 0;
+    }
+}
+
+button {
+    position: relative;
+    overflow: hidden;
+}
+
+button::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+}
+
+button:active::before {
+    animation: ripple 0.6s ease-out;
+}
+
+/* Hover Elegante nos Cards */
+.hourly-item {
+    position: relative;
+}
+
+.hourly-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, transparent 0%, rgba(255,255,255,0.1) 50%, transparent 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    border-radius: var(--radius-md);
+    pointer-events: none;
+}
+
+.hourly-item:hover::before {
+    opacity: 1;
+}
+
+/* Transição Suave entre Estados */
+.daily-card {
+    position: relative;
+}
+
+.daily-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 100%;
+    background: rgba(59, 130, 246, 0.1);
+    transition: width 0.3s ease;
+    z-index: -1;
+}
+
+.daily-card:hover::before {
+    width: 100%;
+}
+
+/* Animação de Pulse para Indicadores */
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.7;
+    }
+}
+
+.aqi-number {
+    animation: pulse 2s ease-in-out infinite;
+}
+
+/* Transição Suave de Scroll */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Animação de Entrada para Gráficos */
+.chart-container {
+    animation: fadeInUp 0.8s ease-out 0.7s both;
+}
+
+/* Microinteração: Feedback Visual em Inputs */
+#city-input {
+    transition: var(--transition);
+}
+
+#city-input:focus {
+    color: var(--accent-color);
+}
+
+/* Animação de Transição de Tema */
+body {
+    transition: background-color 0.5s cubic-bezier(0.4, 0, 0.2, 1), 
+                color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Efeito de Glow em Destaques */
+.highlight-card {
+    position: relative;
+    transition: var(--transition);
+}
+
+.highlight-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 25px -5px rgba(59, 130, 246, 0.2);
+}
+
+/* Animação de Scroll Reveal para Seções */
+.forecast-section {
+    animation: fadeInUp 0.8s ease-out both;
+}
+
+.forecast-section:nth-of-type(1) {
+    animation-delay: 0.3s;
+}
+
+.forecast-section:nth-of-type(2) {
+    animation-delay: 0.5s;
+}
+
+.highlights-section {
+    animation: fadeInUp 0.8s ease-out 0.7s both;
+}
