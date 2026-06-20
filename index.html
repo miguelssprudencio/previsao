@@ -5,18 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SkyCast | Previsão do Tempo Profissional</title>
     <link rel="stylesheet" href="style.css">
-    <!-- Google Fonts: Inter para um visual moderno e limpo -->
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Chart.js para os gráficos -->
+    
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Lucide Icons (via CDN para ícones leves e modernos) -->
+    
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body class="light-mode">
     <div id="app-container">
-        <!-- Skeleton Loading (visível inicialmente) -->
+     
         <div id="skeleton-screen" class="skeleton-container">
             <div class="skeleton-header"></div>
             <div class="skeleton-main-card"></div>
@@ -28,7 +28,7 @@
             </div>
         </div>
 
-        <!-- Conteúdo Principal (escondido durante o loading) -->
+        
         <main id="main-content" class="hidden">
             <header class="app-header">
                 <div class="logo">
@@ -110,7 +110,7 @@
                     <h2>Previsão para as próximas horas</h2>
                 </div>
                 <div class="hourly-forecast-container" id="hourly-container">
-                    <!-- Hourly items will be injected here -->
+                   
                 </div>
                 
                 <div class="chart-container" data-reveal>
@@ -123,7 +123,7 @@
                     <h2>Previsão para 7 dias</h2>
                 </div>
                 <div class="daily-forecast-grid" id="daily-container">
-                    <!-- Daily cards will be injected here -->
+                  
                 </div>
             </section>
 
@@ -175,7 +175,7 @@
         </footer>
     </div>
 
-    <!-- Script para inicializar ícones Lucide -->
+
     <script>
         lucide.createIcons();
     </script>

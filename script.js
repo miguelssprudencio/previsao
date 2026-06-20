@@ -3,7 +3,7 @@ const CONFIG = {
     GEO_API: 'https://geocoding-api.open-meteo.com/v1/search',
     AIR_QUALITY_API: 'https://air-quality-api.open-meteo.com/v1/air-quality',
     DEFAULT_CITY: 'São Paulo',
-    UPDATE_INTERVAL: 10 * 60 * 1000, // 10 minutos
+    UPDATE_INTERVAL: 10 * 60 * 1000, 
 };
 
 let state = {
@@ -16,7 +16,6 @@ let state = {
     chart: null
 };
 
-// --- ELEMENTOS DOM ---
 const elements = {
     appContainer: document.getElementById('app-container'),
     skeleton: document.getElementById('skeleton-screen'),
@@ -47,7 +46,6 @@ const elements = {
     weatherIconLarge: document.getElementById('weather-icon-large'),
 };
 
-// --- INICIALIZAÇÃO ---
 document.addEventListener('DOMContentLoaded', () => {
     initTheme();
     loadWeatherData(CONFIG.DEFAULT_CITY);
@@ -55,11 +53,6 @@ document.addEventListener('DOMContentLoaded', () => {
     initRevealOnScroll();
 });
 
-// --- FUNÇÕES DE API ---
-
-/**
- * Busca dados climáticos completos para uma latitude/longitude
- */
 async function fetchWeather(lat, lon, timezone = 'auto') {
     const params = new URLSearchParams({
         latitude: lat,
@@ -76,9 +69,6 @@ async function fetchWeather(lat, lon, timezone = 'auto') {
     return await response.json();
 }
 
-/**
- * Busca qualidade do ar
- */
 async function fetchAirQuality(lat, lon) {
     const params = new URLSearchParams({
         latitude: lat,
@@ -91,9 +81,6 @@ async function fetchAirQuality(lat, lon) {
     return await response.json();
 }
 
-/**
- * Busca coordenadas por nome de cidade
- */
 async function searchCity(query) {
     const params = new URLSearchParams({
         name: query,
@@ -106,8 +93,6 @@ async function searchCity(query) {
     return await response.json();
 }
 
-// --- LÓGICA DE NEGÓCIO ---
-
 async function loadWeatherData(query, isCoords = false) {
     showLoading();
     try {
@@ -116,9 +101,7 @@ async function loadWeatherData(query, isCoords = false) {
         if (isCoords) {
             lat = query.lat;
             lon = query.lon;
-            // Para geolocalização, poderíamos fazer uma busca reversa, 
-            // mas o Open-Meteo Geocoding não faz reverse. 
-            // Usaremos as coordenadas como nome temporário.
+        
             name = "Sua Localização";
             country = "";
         } else {
@@ -155,61 +138,61 @@ async function loadWeatherData(query, isCoords = false) {
     }
 }
 
-// --- ATUALIZAÇÃO DA UI ---
+
 
 function updateUI() {
     const { current, daily, hourly } = state.forecast;
     const loc = state.location;
 
-    // Cabeçalho e Info Básica
+
     elements.cityName.textContent = loc.country ? `${loc.name}, ${loc.country}` : loc.name;
     elements.currentDate.textContent = new Date().toLocaleDateString('pt-BR', { weekday: 'long', day: 'numeric', month: 'long' });
     
-    // Clima Atual
+
     elements.currentTemp.textContent = Math.round(current.temperature_2m);
     elements.weatherDesc.textContent = getWeatherDescription(current.weather_code);
     elements.minTemp.textContent = Math.round(daily.temperature_2m_min[0]);
     elements.maxTemp.textContent = Math.round(daily.temperature_2m_max[0]);
     
-    // Detalhes
+
     elements.feelsLike.textContent = `${Math.round(current.apparent_temperature)}°C`;
     elements.humidity.textContent = `${current.relative_humidity_2m}%`;
     elements.windSpeed.textContent = `${current.wind_speed_10m} km/h`;
     elements.uvIndex.textContent = daily.uv_index_max[0];
     
-    // Destaques
+
     elements.visibility.textContent = (current.visibility / 1000).toFixed(1);
     elements.pressure.textContent = current.pressure_msl;
     elements.sunrise.textContent = formatTime(daily.sunrise[0]);
     elements.sunset.textContent = formatTime(daily.sunset[0]);
 
-    // Qualidade do Ar
+
     if (state.airQuality) {
         const aqi = state.airQuality.current.us_aqi;
         elements.aqiValue.textContent = aqi;
         elements.aqiStatus.textContent = getAQIStatus(aqi);
     }
 
-    // Ícone Grande
+
     elements.weatherIconLarge.innerHTML = getWeatherIcon(current.weather_code, current.is_day);
 
-    // Aplicar fundo dinâmico baseado na condição climática
+
     applyDynamicBackground(current.weather_code, current.is_day);
 
     renderHourly(hourly);
     renderDaily(daily);
     updateChart(hourly);
     
-    // Re-inicializa ícones Lucide para novos elementos
+ 
     lucide.createIcons();
     
-    // Trigger reveal
+
     setTimeout(revealElements, 100);
 }
 
 function renderHourly(hourly) {
     elements.hourlyContainer.innerHTML = '';
-    // Pegar próximas 24 horas
+
     for (let i = 0; i < 24; i++) {
         const item = document.createElement('div');
         item.className = 'hourly-item';
@@ -256,7 +239,7 @@ function renderDaily(daily) {
 
 
 
-// --- UTILITÁRIOS ---
+
 
 function getWeatherDescription(code) {
     const codes = {
@@ -297,10 +280,10 @@ function formatTime(isoString) {
     return new Date(isoString).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
 }
 
-// --- EVENTOS E INTERAÇÕES ---
+
 
 function setupEventListeners() {
-    // Busca ao digitar (Debounce)
+  
     let timeout;
     elements.cityInput.addEventListener('input', (e) => {
         clearTimeout(timeout);
@@ -312,7 +295,7 @@ function setupEventListeners() {
         timeout = setTimeout(() => showAutocomplete(query), 500);
     });
 
-    // Busca ao pressionar Enter
+
     elements.cityInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
             loadWeatherData(elements.cityInput.value);
@@ -320,7 +303,7 @@ function setupEventListeners() {
         }
     });
 
-    // Geolocalização
+
     elements.geoBtn.addEventListener('click', () => {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
@@ -332,7 +315,7 @@ function setupEventListeners() {
         }
     });
 
-    // Toggle Tema
+
     elements.themeToggle.addEventListener('click', toggleTheme);
 }
 
@@ -398,8 +381,6 @@ function hideLoading() {
     elements.mainContent.classList.remove('hidden');
 }
 
-// --- ANIMAÇÕES ---
-
 function initRevealOnScroll() {
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
@@ -417,15 +398,13 @@ function revealElements() {
     items.forEach(item => state.revealObserver.observe(item));
 }
 
-// --- FUNDOS DINÂMICOS ---
-
 function applyDynamicBackground(weatherCode, isDay) {
     const mainCard = document.querySelector('.current-main-card');
     
-    // Remover todas as classes de clima
+    
     mainCard.classList.remove('weather-sunny', 'weather-cloudy', 'weather-rainy', 'weather-stormy', 'weather-snowy', 'weather-night');
     
-    // Aplicar classe apropriada
+   
     if (!isDay) {
         mainCard.classList.add('weather-night');
     } else if (weatherCode === 0) {
@@ -444,8 +423,6 @@ function applyDynamicBackground(weatherCode, isDay) {
         mainCard.classList.add('weather-stormy');
     }
 }
-
-// --- MELHORIAS NO GRÁFICO ---
 
 function updateChart(hourly) {
     const ctx = document.getElementById('hourly-chart').getContext('2d');
@@ -530,12 +507,6 @@ function updateChart(hourly) {
     });
 }
 
-
-// --- MELHORIAS DE RESPONSIVIDADE E PERFORMANCE ---
-
-/**
- * Debounce para otimizar chamadas de função
- */
 function debounce(func, delay) {
     let timeout;
     return function (...args) {
@@ -544,9 +515,6 @@ function debounce(func, delay) {
     };
 }
 
-/**
- * Throttle para otimizar eventos de scroll
- */
 function throttle(func, limit) {
     let inThrottle;
     return function (...args) {
@@ -558,29 +526,16 @@ function throttle(func, limit) {
     };
 }
 
-// --- MELHORIAS DE ACESSIBILIDADE E UX ---
-
-/**
- * Adicionar feedback visual ao carregar dados
- */
 function addLoadingFeedback() {
     const skeleton = document.getElementById('skeleton-screen');
     skeleton.style.animation = 'fadeInUp 0.5s ease-out';
 }
 
-/**
- * Suavizar transição entre cidades
- */
 function smoothTransition() {
     const mainContent = document.getElementById('main-content');
     mainContent.style.animation = 'fadeInUp 0.6s ease-out';
 }
 
-// --- TRATAMENTO DE ERROS MELHORADO ---
-
-/**
- * Mostrar mensagem de erro amigável
- */
 function showError(message) {
     const errorDiv = document.createElement('div');
     errorDiv.className = 'error-notification';
@@ -604,8 +559,6 @@ function showError(message) {
         setTimeout(() => errorDiv.remove(), 300);
     }, 3000);
 }
-
-// --- ANIMAÇÕES DE ENTRADA ADICIONAIS ---
 
 const style = document.createElement('style');
 style.textContent = `
@@ -646,13 +599,8 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 
-// --- OTIMIZAÇÃO DE PERFORMANCE ---
-
-/**
- * Lazy loading para imagens e ícones
- */
 function optimizePerformance() {
-    // Usar requestAnimationFrame para animações suaves
+
     if (window.requestAnimationFrame) {
         window.addEventListener('scroll', throttle(() => {
             revealElements();
@@ -660,12 +608,12 @@ function optimizePerformance() {
     }
 }
 
-// --- INICIALIZAÇÃO FINAL ---
 
-// Otimizar performance ao carregar
+
+
 window.addEventListener('load', () => {
     optimizePerformance();
-    // Atualizar dados a cada 10 minutos
+
     setInterval(() => {
         if (state.location) {
             loadWeatherData(state.location.name);
@@ -673,7 +621,6 @@ window.addEventListener('load', () => {
     }, CONFIG.UPDATE_INTERVAL);
 });
 
-// Tratar erros de rede
 window.addEventListener('offline', () => {
     showError('Você está offline. Alguns dados podem estar desatualizados.');
 });
@@ -682,7 +629,7 @@ window.addEventListener('online', () => {
     showError('Conexão restaurada!');
 });
 
-// Melhorar experiência em dispositivos móveis
+
 if ('ontouchstart' in window) {
     document.body.classList.add('touch-device');
 }
